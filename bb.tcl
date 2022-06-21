@@ -797,7 +797,7 @@ ABM BEGIN
 				GROUP            "grillage"
 				CSECTION         "grillage"         0.25000
 				ELEMS             10001     20
-				MEMBER           "1"       "2"       2
+				MEMBER           "1"       "2"       4
 				
 			GRILLAGE END
 			
