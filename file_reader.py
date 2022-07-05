@@ -99,18 +99,12 @@ class AllBrGen():
 
 def main():
     model_group1 = AllBrGen('double_gird_pt_bridges')
+    print(model_group1)
     # gen_tcl = model_group1.generate_tcl('dd.tcl', 
     #                                     'eee.tcl', 
     #                                     763, 
     #                                     'ZROTATE   20', 
     #                                     'ZROTATE   30')
-
-    # gen_tcl = model_group1.generate_tcl__('dd.tcl', 
-    #                                     'eee.tcl', 
-    #                                     763, 
-    #                                     'ZROTATE   20', 
-    #                                     4,
-    #                                     -10)
 
     gen_tcl = model_group1.generate_tcl__88('dd.tcl', 
                                         'eee.tcl', 
@@ -119,14 +113,7 @@ def main():
                                         'ZROTATE   20', 
                                         4,
                                         10)
-    
-    # gen_tcl = model_group1.generate_tcl__88('dd.tcl', 
-    #                                     'eee.tcl', 
-    #                                     True,
-    #                                     773, 
-    #                                     'ZROTATE   20', 
-    #                                     -4,
-    #                                     10)
+
     gen_tcl_back = model_group1.generate_tcl__88('eee.tcl', 
                                     'eee.tcl', 
                                     True,
