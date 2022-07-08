@@ -15,35 +15,35 @@ class AllBrGen():
         with open(filepath2, "w") as file_object:
             file_object.writelines(new_data)
 
-    def generate_tcl__(self, filepath, 
-                       filepath2, 
-                       first_raw_no,
-                       input_string, 
-                       skew_reach, 
-                       angle_change):
-        angle_from_str = float(input_string[10:15])
-        new_init_angle = angle_from_str - angle_change
-        old_bottom_angle, old_angle_step = self._angle_step_bottom_angle(angle_from_str, skew_reach)
-        new_bottom_angle, new_angle_step = self._angle_step_bottom_angle(new_init_angle, skew_reach)
-        with open(filepath) as file_object:
-            data = file_object.readlines()
-            _data = []
-            new_angle = 0.0
-            for raw in range(first_raw_no, first_raw_no + skew_reach, 1):
-                if raw == first_raw_no:
-                    new_angle = new_init_angle
-                    old_angle = angle_from_str
-                else:
-                    new_angle -= new_angle_step
-                    old_angle -= old_angle_step
-                my_new_str = f'{input_string[:10]}{str(new_angle)}'
-                my_old_str = f'{input_string[:10]}{str(old_angle)}'
-                _data.append(data[raw].replace(my_old_str, my_new_str, 1))
-                pp = 1
-            new_data = data[:first_raw_no] + _data + data[first_raw_no + skew_reach+1:]
-            kk = 1
-        with open(filepath2, "w") as file_object2:
-            file_object2.writelines(new_data)
+    # def generate_tcl__(self, filepath, 
+    #                    filepath2, 
+    #                    first_raw_no,
+    #                    input_string, 
+    #                    skew_reach, 
+    #                    angle_change):
+    #     angle_from_str = float(input_string[10:15])
+    #     new_init_angle = angle_from_str - angle_change
+    #     old_bottom_angle, old_angle_step = self._angle_step_bottom_angle(angle_from_str, skew_reach)
+    #     new_bottom_angle, new_angle_step = self._angle_step_bottom_angle(new_init_angle, skew_reach)
+    #     with open(filepath) as file_object:
+    #         data = file_object.readlines()
+    #         _data = []
+    #         new_angle = 0.0
+    #         for raw in range(first_raw_no, first_raw_no + skew_reach, 1):
+    #             if raw == first_raw_no:
+    #                 new_angle = new_init_angle
+    #                 old_angle = angle_from_str
+    #             else:
+    #                 new_angle -= new_angle_step
+    #                 old_angle -= old_angle_step
+    #             my_new_str = f'{input_string[:10]}{str(new_angle)}'
+    #             my_old_str = f'{input_string[:10]}{str(old_angle)}'
+    #             _data.append(data[raw].replace(my_old_str, my_new_str, 1))
+    #             pp = 1
+    #         new_data = data[:first_raw_no] + _data + data[first_raw_no + skew_reach+1:]
+    #         kk = 1
+    #     with open(filepath2, "w") as file_object2:
+    #         file_object2.writelines(new_data)
             
     def generate_tcl__88(self, filepath, 
                        filepath2, 
@@ -51,15 +51,20 @@ class AllBrGen():
                        first_raw_no,
                        input_string, 
                        skew_reach, 
-                       angle_change):
+                       angle_change,
+                       fan):
         if opposite:
             counter = -1
         else:
             counter = 1
         angle_from_str = float(input_string[10:15])
         new_init_angle = angle_from_str - angle_change
-        old_bottom_angle, old_angle_step = self._angle_step_bottom_angle(angle_from_str, skew_reach)
-        new_bottom_angle, new_angle_step = self._angle_step_bottom_angle(new_init_angle, skew_reach)
+        if fan:
+            old_bottom_angle, old_angle_step = self._angle_step_bottom_angle(angle_from_str, skew_reach)
+            new_bottom_angle, new_angle_step = self._angle_step_bottom_angle(new_init_angle, skew_reach)
+        else:
+            old_angle_step = 0
+            new_angle_step = 0
         with open(filepath) as file_object:
             data = file_object.readlines()
             _data = []
@@ -79,7 +84,6 @@ class AllBrGen():
                 new_data = data[:(first_raw_no + skew_reach + 1)] + _data + data[first_raw_no + 1:]
             else:
                 new_data = data[:first_raw_no] + _data + data[first_raw_no + skew_reach:]
-            kk = 1
         with open(filepath2, "w") as file_object2:
             file_object2.writelines(new_data)
 
@@ -100,28 +104,39 @@ class AllBrGen():
 def main():
     model_group1 = AllBrGen('double_gird_pt_bridges')
     print(model_group1)
-    # gen_tcl = model_group1.generate_tcl('dd.tcl', 
-    #                                     'eee.tcl', 
-    #                                     763, 
-    #                                     'ZROTATE   20', 
-    #                                     'ZROTATE   30')
+    starting_angle = 30
+    step = -1
+    
+    for i in range(starting_angle-1, -31, step):
+        input_string = f'ZROTATE   {str(i+1)}'
+        previous_name = f'angle_{i+1}.tcl'
+        file_name = f'angle_{i}.tcl'
+        gen_tcl = model_group1.generate_tcl__88(previous_name, 
+                                                file_name, 
+                                                False,
+                                                862, 
+                                                input_string, 
+                                                1,
+                                                -step,
+                                                False)
 
-    gen_tcl = model_group1.generate_tcl__88('dd.tcl', 
-                                        'eee.tcl', 
-                                        False,
-                                        763, 
-                                        'ZROTATE   20', 
-                                        4,
-                                        10)
+        gen_tcl_mid = model_group1.generate_tcl__88(file_name, 
+                                                    file_name, 
+                                                    False,
+                                                    864, 
+                                                    input_string, 
+                                                    1,
+                                                    -step,
+                                                    False)
 
-    gen_tcl_back = model_group1.generate_tcl__88('eee.tcl', 
-                                    'eee.tcl', 
-                                    True,
-                                    773, 
-                                    'ZROTATE   20', 
-                                    -4,
-                                    10)
-   
+        gen_tcl_back = model_group1.generate_tcl__88(file_name, 
+                                                    file_name, 
+                                                    True,
+                                                    866, 
+                                                    input_string, 
+                                                    -1,
+                                                    -step,
+                                                    False)
 
 if __name__ == '__main__':
     main()

@@ -5,7 +5,7 @@ exe = "C:/Program Files/Allplan/Allplan 2021/Prg/AllplanBridge_2022.exe"
 wdir="C:/ppp"
 
 #start loop
-fname="Wdki_do_mod_tcl_v23.tcl"
+fname="angle_0.tcl"
 
 args = []
 args.append('-batch')

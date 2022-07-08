@@ -70,7 +70,7 @@ ABM BEGIN
 				
 				VALUES BEGIN
 					
-					VALUE   EMODUL    "E"            35200                    "\%0.0lf" ""
+					VALUE   EMODUL    "E"            39000                    "\%0.0lf" ""
 					VALUE   GMODUL    "G"            14666.7                  "\%0.0lf" ""
 					VALUE   POISSON   "Ny"           0.2                      "\%0.1lf" ""
 					VALUE   ALPHAT    "Alpha-T"      1E-05                    "\%0.6lf" ""
@@ -166,6 +166,8 @@ ABM BEGIN
 		TABLE      "tab_wyszerz"     ""
 		TABLE      "Spectrum_1"      "EQ-Event 1 - general"
 		TABLE      "Spectrum_2"      "EQ-Event 1 - EC horizontal"
+		TABLE      "TableGrillage"   ""
+		VAR        "ExpressionGrillage" ""
 		
 		CURVE "tab_wyszerz"   CONSTX   CONSTY BEGIN
 			
@@ -191,6 +193,47 @@ ABM BEGIN
 			LINE            "4.0"   "0.2"
 			
 		CURVE END
+		
+		CURVE "TableGrillage"   CONSTX   CONSTY BEGIN
+			
+			LINE            "0"     "1.31"
+			LINE            "0.7"   "1.31"
+			LINE            "1.4"   "1.31"
+			FREE            "1.4"   "1.31"
+			LINE            "1.45"  "0.25"
+			LINE            "4.315" "0.25"
+			LINE            "7.230" "0.25"
+			LINE            "10.145" "0.25"
+			LINE            "13.060" "0.25"
+			LINE            "15.975" "0.25"
+			LINE            "18.890" "0.25"
+			LINE            "21.805" "0.25"
+			LINE            "24.720" "0.25"
+			LINE            "27.635" "0.25"
+			FREE            "30.50" "0.25"
+			FREE            "30.550" "1.31"
+			LINE            "30.830" "1.31"
+			LINE            "30.970" "1.31"
+			FREE            "31.250" "1.31"
+			LINE            "31.250" "1.31"
+			LINE            "31.30" "0.25"
+			LINE            "34.165" "0.25"
+			LINE            "37.080" "0.25"
+			LINE            "39.995" "0.25"
+			LINE            "42.910" "0.25"
+			LINE            "45.825" "0.25"
+			LINE            "48.740" "0.25"
+			LINE            "51.655" "0.25"
+			LINE            "54.570" "0.25"
+			LINE            "57.485" "0.25"
+			FREE            "60.35" "0.25"
+			FREE            "60.400" "1.31"
+			LINE            "61.100" "1.31"
+			LINE            "61.800" "1.31"
+			
+		CURVE END
+		
+		DEFINE     "ExpressionGrillage" "TableGrillage(\$sf)"
 		
 	CALC END
 	
@@ -531,25 +574,26 @@ ABM BEGIN
 			
 			CBOUNDARIES BEGIN
 				
-				BOUNDARY "Boundary 1" BEGIN
+				BOUNDARY "Boundary 1" OPEN BEGIN
 					
 					POINTS BEGIN
 						
-						BPOINT       1  LSECT   "dol pop" "Yloc"
-						BPOINT       2  LSECT   "dol pop" "L7"
-						BPOINT       3  LSECT   "dol dzA" "L3"
-						BPOINT       4  LSECT   "dol dzA" "L2"
-						BPOINT       5  POINT   "P2"
-						BPOINT       6  POINT   "P1"
-						BPOINT       7  LSECT   "koniec wspL" "gora plyty"
-						BPOINT       8  LSECT   "os dzL" "gora plyty"
-						BPOINT       9  LSECT   "L1"    "Yloc"
+						BPOINT       1  LSECT   "L1"    "Yloc"
+						BPOINT       2  LSECT   "dol pop" "Yloc"
+						BPOINT       3  LSECT   "dol pop" "L7"
+						BPOINT       4  LSECT   "dol dzA" "L3"
+						BPOINT       5  LSECT   "dol dzA" "L2"
+						BPOINT       6  POINT   "P2"
+						BPOINT       7  POINT   "P1"
+						BPOINT       8  LSECT   "koniec wspL" "gora plyty"
+						BPOINT       9  LSECT   "os dzL" "gora plyty"
+						BPOINT      10  LSECT   "L1"    "Yloc"
 						
 					POINTS END
 					
 				BOUNDARY END
 				
-				BOUNDARY "Boundary 2" BEGIN
+				BOUNDARY "Boundary 2" OPEN BEGIN
 					
 					POINTS BEGIN
 						
@@ -564,6 +608,7 @@ ABM BEGIN
 						BPOINT       9  LSECT   "dol dzB" "L12"
 						BPOINT      10  LSECT   "dol pop" "L14"
 						BPOINT      11  LSECT   "dol pop" "Yloc"
+						BPOINT      12  LSECT   "L1"    "Yloc"
 						
 					POINTS END
 					
@@ -657,9 +702,59 @@ ABM BEGIN
 			
 			CVARS BEGIN
 				
+				VAR         "height"                   1.31000  LENGTH  "Cross member height"
+				VAR         "wleft"                    0.00000  LENGTH  "Cross member width to left"
+				VAR         "wright"                   0.30312  LENGTH  "Cross member width to right"
+				
+			CVARS END
+			
+			CLINES BEGIN
+				
+				ZAXIS       "Zloc"              0.00000      0.00000
+				YAXIS       "Yloc"              0.00000     90.00000
+				
+				PARALLEL    "bottom"       "height"       NEG  LINE   "Zloc"
+				PARALLEL    "left"         "wleft"        POS  LINE   "Yloc"
+				PARALLEL    "right"        "wright"       NEG  LINE   "Yloc"
+				
+			CLINES END
+			
+			CBOUNDARIES BEGIN
+				
+				BOUNDARY "Beam1" BEGIN
+					
+					POINTS BEGIN
+						
+						BPOINT       1  LSECT   "left"  "bottom"
+						BPOINT       2  LSECT   "right" "bottom"
+						BPOINT       3  LSECT   "right" "Zloc"
+						BPOINT       4  LSECT   "left"  "Zloc"
+						
+					POINTS END
+					
+				BOUNDARY END
+				
+			CBOUNDARIES END
+			
+			CUNITS BEGIN
+				
+				SBEAM       1    LSECT     "Zloc"    "Yloc"
+				
+				SBEAM       1    BOUNDARY  "Beam1"
+				
+			CUNITS END
+			
+		CSECTION END
+		
+		CSECTION "ExpressionGrillage" BEGIN
+			
+			TEXT   "Grillage, cross members"
+			
+			CVARS BEGIN
+				
 				VAR         "height"                   0.25000  LENGTH  "Cross member height"
 				VAR         "wleft"                    0.00000  LENGTH  "Cross member width to left"
-				VAR         "wright"                   0.43978  LENGTH  "Cross member width to right"
+				VAR         "wright"                   0.35001  LENGTH  "Cross member width to right"
 				
 			CVARS END
 			
@@ -723,84 +818,82 @@ ABM BEGIN
 				SGLOBAL s001           0.000000    BEAM
 				SGLOBAL s002           0.700000    BEAM
 				SGLOBAL s003           1.400000    BEAM
-				SGLOBAL s004           4.315000    BEAM
-				SGLOBAL s005           7.230000    BEAM
-				SGLOBAL s006          10.145000    BEAM
-				SGLOBAL s007          13.060000    BEAM
-				SGLOBAL s008          15.975000    BEAM
-				SGLOBAL s009          18.890000    BEAM
-				SGLOBAL s010          21.805000    BEAM
-				SGLOBAL s011          24.720000    BEAM
-				SGLOBAL s012          27.635000    BEAM
-				SGLOBAL s013          30.550000    BEAM
-				SGLOBAL s014          30.900000    BEAM
-				SGLOBAL s015          31.250000    BEAM
-				SGLOBAL s016          34.165000    BEAM
-				SGLOBAL s017          37.080000    BEAM
-				SGLOBAL s018          39.995000    BEAM
-				SGLOBAL s019          42.910000    BEAM
-				SGLOBAL s020          45.825000    BEAM
-				SGLOBAL s021          48.740000    BEAM
-				SGLOBAL s022          51.655000    BEAM
-				SGLOBAL s023          54.570000    BEAM
-				SGLOBAL s024          57.485000    BEAM
-				SGLOBAL s025          60.400000    BEAM
-				SGLOBAL s026          61.100000    BEAM
-				SGLOBAL s027          61.800000    BEAM
+				SGLOBAL s004           1.450000    BEAM
+				SGLOBAL s005           4.315000    BEAM
+				SGLOBAL s006           7.230000    BEAM
+				SGLOBAL s007          10.145000    BEAM
+				SGLOBAL s008          13.060000    BEAM
+				SGLOBAL s009          15.975000    BEAM
+				SGLOBAL s010          18.890000    BEAM
+				SGLOBAL s011          21.805000    BEAM
+				SGLOBAL s012          24.720000    BEAM
+				SGLOBAL s013          27.635000    BEAM
+				SGLOBAL s014          30.500000    BEAM
+				SGLOBAL s015          30.550000    BEAM
+				SGLOBAL s016          30.900000    BEAM
+				SGLOBAL s017          31.250000    BEAM
+				SGLOBAL s018          31.300000    BEAM
+				SGLOBAL s019          34.165000    BEAM
+				SGLOBAL s020          37.080000    BEAM
+				SGLOBAL s021          39.995000    BEAM
+				SGLOBAL s022          42.910000    BEAM
+				SGLOBAL s023          45.825000    BEAM
+				SGLOBAL s024          48.740000    BEAM
+				SGLOBAL s025          51.655000    BEAM
+				SGLOBAL s026          54.570000    BEAM
+				SGLOBAL s027          57.485000    BEAM
+				SGLOBAL s028          60.350000    BEAM
+				SGLOBAL s029          60.400000    BEAM
+				SGLOBAL s030          61.100000    BEAM
+				SGLOBAL s031          61.800000    BEAM
 				
 			STATIONS END
 			
 			SPOINT            s001              CSECTION   "" "wd185_zpop"
 			SPOINT            s002              CSECTION   "wd185_zpop"
 			SPOINT            s003              CSECTION   "wd185_zpop" "wd185_with_road"
-			SPOINT      [XFTS s004   s012   1]  CSECTION   "wd185_with_road"
-			SPOINT            s013              CSECTION   "wd185_with_road" "wd185_zpop"
-			SPOINT            s014              CSECTION   "wd185_zpop"
-			SPOINT            s015              CSECTION   "wd185_zpop" "wd185_with_road"
-			SPOINT      [XFTS s016   s024   1]  CSECTION   "wd185_with_road"
-			SPOINT            s025              CSECTION   "wd185_with_road" "wd185_zpop"
-			SPOINT      [XFTS s026   s027   1]  CSECTION   "wd185_zpop"
+			SPOINT      [XFTS s004   s014   1]  CSECTION   "wd185_with_road"
+			SPOINT            s015              CSECTION   "wd185_with_road" "wd185_zpop"
+			SPOINT            s016              CSECTION   "wd185_zpop"
+			SPOINT            s017              CSECTION   "wd185_zpop" "wd185_with_road"
+			SPOINT      [XFTS s018   s028   1]  CSECTION   "wd185_with_road"
+			SPOINT            s029              CSECTION   "wd185_with_road" "wd185_zpop"
+			SPOINT      [XFTS s030   s031   1]  CSECTION   "wd185_zpop"
 			
-			SPOINT            s001              ZROTATE   10.00000   STRETCH
-			SPOINT            s002              ZROTATE   7.6666666666666660000   STRETCH
-			SPOINT            s003              ZROTATE   5.3333333333333320000   STRETCH
-			SPOINT            s004              ZROTATE    5.00000   STRETCH
-			SPOINT      [XFTS s005   s012   1]  ZROTATE    0.00000
-			SPOINT      [XFTS s013   s015   1]  ZROTATE    0.00000   STRETCH
-			SPOINT      [XFTS s016   s023   1]  ZROTATE    0.00000
-			SPOINT            s024              ZROTATE    5.00000   STRETCH
-			SPOINT            s025              ZROTATE   5.3333333333333320000   STRETCH
-			SPOINT            s026              ZROTATE   7.6666666666666660000   STRETCH
-			SPOINT            s027              ZROTATE   10.00000   STRETCH
+			SPOINT      [XFTS s001   s004   1]  ZROTATE   10.00000   STRETCH
+			SPOINT      [XFTS s005   s013   1]  ZROTATE    0.00000
+			SPOINT      [XFTS s014   s018   1]  ZROTATE   10.00000   STRETCH
+			SPOINT      [XFTS s019   s027   1]  ZROTATE    0.00000
+			SPOINT      [XFTS s028   s031   1]  ZROTATE   10.00000   STRETCH
 			
-			SPOINT      [XFTS s001   s027   1]  YROTATE    0.00000
+			SPOINT      [XFTS s001   s031   1]  YROTATE    0.00000
 			
-			SPOINT            s001              VARIABLE   "wyszerzenieDZ" ""                   "tab_wyszerz(\$s)"
-			SPOINT      [XFTS s002   s027   1]  VARIABLE   "wyszerzenieDZ" "tab_wyszerz(\$s)"
+			SPOINT            s001              VARIABLE   "wyszerzenieDZ" ""                   "tab_wyszerz(\$sr)"
+			SPOINT      [XFTS s002   s031   1]  VARIABLE   "wyszerzenieDZ" "tab_wyszerz(\$sr)"
 			
-			SPOINT      [XFTS s001   s027   1]  NODE       "1"             101   STEP     1
-			SPOINT      [XFTS s001   s027   1]  NODE       "2"             201   STEP     1
+			SPOINT      [XFTS s001   s031   1]  NODE       "1"             101   STEP     1
+			SPOINT      [XFTS s001   s031   1]  NODE       "2"             201   STEP     1
 			
-			SPOINT      [XFTS s001   s026   1]  BEAM       "1"             101   STEP     1
-			SPOINT      [XFTS s001   s026   1]  BEAM       "2"             201   STEP     1
+			SPOINT      [XFTS s001   s030   1]  BEAM       "1"             101   STEP     1
+			SPOINT      [XFTS s001   s030   1]  BEAM       "2"             201   STEP     1
 			
-			SPOINT      [XFTS s001   s026   1]  MATERIAL   "1"          "EN:C40/50"
-			SPOINT      [XFTS s001   s026   1]  MATERIAL   "2"          "EN:C40/50"
-			SPOINT      [XFTS s001   s026   1]  MATERIAL   "3"          ""
-			SPOINT      [XFTS s001   s026   1]  MATERIAL   "4"          ""
-			SPOINT      [XFTS s001   s026   1]  MATERIAL   "5"          "EN:C30/37"
-			SPOINT      [XFTS s001   s026   1]  MATERIAL   "6"          "EN:C30/37"
+			SPOINT      [XFTS s001   s030   1]  MATERIAL   "1"          "EN:C40/50"
+			SPOINT      [XFTS s001   s030   1]  MATERIAL   "2"          "EN:C40/50"
+			SPOINT      [XFTS s001   s030   1]  MATERIAL   "3"          "EN:C40/50"
+			SPOINT      [XFTS s001   s030   1]  MATERIAL   "4"          "EN:C40/50"
+			SPOINT      [XFTS s001   s030   1]  MATERIAL   "5"          "EN:C30/37"
+			SPOINT      [XFTS s001   s030   1]  MATERIAL   "6"          "EN:C30/37"
 			
-			SPOINT      [XFTS s001   s026   1]  GROUP      "1"          ""
-			SPOINT      [XFTS s001   s026   1]  GROUP      "2"          ""
+			SPOINT      [XFTS s001   s030   1]  GROUP      "1"          ""
+			SPOINT      [XFTS s001   s030   1]  GROUP      "2"          ""
 			
 			GRILLAGE "AUTO" BEGIN
 				
 				MATERIAL         "EN:C40/50"
-				GROUP            "grillage"
-				CSECTION         "grillage"         0.25000
-				ELEMS             10001     20
-				MEMBER           "1"       "2"       4
+				GROUP            ""
+				CSECTION         "grillage" "ExpressionGrillage"
+				ELEMS              2001     10
+				MEMBER           "1"       "2"       2
 				
 			GRILLAGE END
 			
@@ -874,10 +967,10 @@ ABM BEGIN
 			
 			SPRING2SMEM "Soil support 1"        CGREF   "Girder 1"      s002    BACK    "P1_left"
 			SPRING2SMEM "Soil support 2"        CGREF   "Girder 1"      s002    BACK    "P2_right"
-			SPRING2SMEM "Soil support 3"        CGREF   "Girder 1"      s014    BACK    "P1_left"
-			SPRING2SMEM "Soil support 4"        CGREF   "Girder 1"      s014    BACK    "P2_right"
-			SPRING2SMEM "Soil support 5"        CGREF   "Girder 1"      s026    BACK    "P1_left"
-			SPRING2SMEM "Soil support 6"        CGREF   "Girder 1"      s026    BACK    "P2_right"
+			SPRING2SMEM "Soil support 3"        CGREF   "Girder 1"      s016    BACK    "P1_left"
+			SPRING2SMEM "Soil support 4"        CGREF   "Girder 1"      s016    BACK    "P2_right"
+			SPRING2SMEM "Soil support 5"        CGREF   "Girder 1"      s030    BACK    "P1_left"
+			SPRING2SMEM "Soil support 6"        CGREF   "Girder 1"      s030    BACK    "P2_right"
 			
 		GPOSITIONS END
 		
@@ -889,23 +982,124 @@ ABM BEGIN
 			
 			RIGID       "Soil support 1" FRONT              TO   "Girder 1"     s002    BACK  "1"
 			RIGID       "Soil support 2" FRONT              TO   "Girder 1"     s002    BACK  "2"
-			RIGID       "Soil support 3" FRONT              TO   "Girder 1"     s014    BACK  "1"
-			RIGID       "Soil support 4" FRONT              TO   "Girder 1"     s014    BACK  "2"
-			RIGID       "Soil support 5" FRONT              TO   "Girder 1"     s026    BACK  "1"
-			RIGID       "Soil support 6" FRONT              TO   "Girder 1"     s026    BACK  "2"
-			RIGID       "Girder 1"      s001       FRONT "1" TO   "Girder 1"    s001    FRONT  "2"
-			RIGID       "Girder 1"      s003       FRONT "2" TO   "Girder 1"    s003    FRONT  "1"
-			RIGID       "Girder 1"      s027       BACK "1" TO   "Girder 1"     s027    BACK  "2"
-			RIGID       "Girder 1"      s025       BACK "1" TO   "Girder 1"     s025    FRONT  "2"
-			RIGID       "Girder 1"      s015       BACK "2" TO   "Girder 1"     s015    BACK  "1"
-			RIGID       "Girder 1"      s013       FRONT "2" TO   "Girder 1"    s013    FRONT  "1"
-			RIGID       "Girder 1"      s015       FRONT "2" TO   "Girder 1"    s015    BACK  "2"
-			RIGID       "Girder 1"      s015       FRONT "1" TO   "Girder 1"    s015    BACK  "1"
-			RIGID       "Girder 1"      s013       BACK "2" TO   "Girder 1"     s013    FRONT  "2"
+			RIGID       "Soil support 3" FRONT              TO   "Girder 1"     s016    BACK  "1"
+			RIGID       "Soil support 4" FRONT              TO   "Girder 1"     s016    BACK  "2"
+			RIGID       "Soil support 5" FRONT              TO   "Girder 1"     s030    BACK  "1"
+			RIGID       "Soil support 6" FRONT              TO   "Girder 1"     s030    BACK  "2"
 			
 		CONNECTIONS END
 		
 	STRUCTURE END
+	
+	#---------------------------------------------------------------------------
+	# Traffic definition
+	#---------------------------------------------------------------------------
+	
+	TRAFFIC BEGIN
+		
+		LANESET "LaneSet 1" BEGIN
+			
+			TEXT       ""
+			ZPOSITION  NONE              ""            3.30000
+			LOADDIR    VERTICAL
+			LANEDIR    MIRROR
+			
+			LANE       1        WIDTH                  2.75000
+			
+			LANE       1        TRPOS    WREL          0.66500
+			
+			ASSEMBLIES BEGIN
+				
+				ASM        *  MEMBER    "Girder 1"    BEAM  2    SGLOBAL   *              SGLOBAL   *
+				
+			ASSEMBLIES END
+			
+		LANESET END
+		
+		LANESET "LaneSet 2" BEGIN
+			
+			TEXT       ""
+			ZPOSITION  NONE              ""           -2.40000
+			LOADDIR    VERTICAL
+			LANEDIR
+			
+			LANE       1        WIDTH                  2.75000
+			
+			LANE       1        TRPOS    WREL          0.82000
+			
+			ASSEMBLIES BEGIN
+				
+				ASM        *  MEMBER    "Girder 1"    BEAM  1    SGLOBAL   *              SGLOBAL   *
+				
+			ASSEMBLIES END
+			
+		LANESET END
+		
+		TRAIN "Load train 1" GENERAL BEGIN
+			
+			TEXT       ""
+			
+			ITEMS BEGIN
+				
+				FLOAD           40.0                       1
+				DISTANCE                 1.94     1.94     1
+				FLOAD           40.0                       1
+				DISTANCE                 2.81     2.81     1
+				FLOAD           55.0                       1
+				DISTANCE                 1.38     1.38     1
+				FLOAD           55.0                       1
+				DISTANCE                 3.00     3.00     1
+				FLOAD          110.0                       1
+				DISTANCE                 1.38     1.38     1
+				FLOAD          110.0                       1
+				DISTANCE                 2.81     2.81     1
+				FLOAD           80.0                       1
+				DISTANCE                 1.94     1.94     1
+				FLOAD           80.0                       1
+				
+			ITEMS END
+			
+		TRAIN END
+		
+	TRAFFIC END
+	
+	#---------------------------------------------------------------------------
+	# Superposition definition
+	#---------------------------------------------------------------------------
+	
+	SUPERPOSITION BEGIN
+		
+		LEADING        DISPL   UX   UY   UZ   RX   RY   RZ
+		LEADING        FORCE   NX   VY   VZ   MX   MY   MZ
+		
+		ENVELOPE "Envelope 1" BEGIN
+			
+			TEXT            ""
+			
+			SUP    INFLINE  VERTICAL    "LaneSet 1" 1   1
+			SUP    TRAIN    "Load train 1"
+			
+		ENVELOPE END
+		
+		ENVELOPE "Envelope 2" BEGIN
+			
+			TEXT            ""
+			
+			SUP    INFLINE  VERTICAL    "LaneSet 2" 1   1
+			SUP    TRAIN    "Load train 1"
+			
+		ENVELOPE END
+		
+		ENVELOPE "Envelope 3" BEGIN
+			
+			TEXT            ""
+			
+			SUP    ADDENV   "Envelope 1"
+			SUP    ADDENV   "Envelope 2"
+			
+		ENVELOPE END
+		
+	SUPERPOSITION END
 	
 	#---------------------------------------------------------------------------
 	# Combination tables
@@ -994,11 +1188,7 @@ ABM BEGIN
 				ASM        2  MEMBER    "Girder 1"    BEAM  *    SGLOBAL   30.550000      SGLOBAL   31.250000
 				ASM        2  MEMBER    "Girder 1"    BEAM  *    SGLOBAL   31.250000      SGLOBAL   60.400000
 				ASM        2  MEMBER    "Girder 1"    BEAM  *    SGLOBAL   60.400000      SGLOBAL   61.800000
-				ASM        3  MEMBER    "Girder 1"    ZBEAM  *   SGLOBAL   0.000000       SGLOBAL   1.400000
-				ASM        3  MEMBER    "Girder 1"    ZBEAM  *   SGLOBAL   1.400000       SGLOBAL   30.550000
-				ASM        3  MEMBER    "Girder 1"    ZBEAM  *   SGLOBAL   30.550000      SGLOBAL   31.250000
-				ASM        3  MEMBER    "Girder 1"    ZBEAM  *   SGLOBAL   31.250000      SGLOBAL   60.400000
-				ASM        3  MEMBER    "Girder 1"    ZBEAM  *   SGLOBAL   60.400000      SGLOBAL   61.800000
+				ASM        3  MEMBER    "Girder 1"    ZBEAM  *   SGLOBAL   *              SGLOBAL   *
 				
 			ASSEMBLIES END
 			
@@ -1007,7 +1197,35 @@ ABM BEGIN
 				#task   taskname          day1     duration assembly [SKIP] additional args
 				TASK    INSTSUPP             1 LOCAL    120     1           "descr=Activate bearings/springs"
 				TASK    CONCRETE             1 LOCAL    120     2           "Dshrink=0" "descr=Concrete (pour + curing)"
-				TASK    INSTCONC             1 LOCAL    120     3           "Dshrink=0" "virtual=TRUE" "descr=Mount concrete girder"
+				TASK    INSTCONC             1 LOCAL    120     3           "Dshrink=0" "virtual=FALSE" "descr=Mount concrete girder"
+				
+			TASKS END
+			
+		PHASE END
+		
+		PHASE "sdl" BEGIN
+			
+			TEXT       ""
+			DAYBEGIN   1
+			HUMIDITY   75.00
+			TMEAN      20.00
+			
+			ASSEMBLIES BEGIN
+				
+				ASM        1  MEMBER    "Girder 1"    BEAM  1    SGLOBAL   *              SGLOBAL   *
+				ASM        1  MEMBER    "Girder 1"    BEAM  2    SGLOBAL   *              SGLOBAL   *
+				
+			ASSEMBLIES END
+			
+			TASKS BEGIN
+				
+				#task   taskname          day1     duration assembly [SKIP] additional args
+				LOADCASE                   121 GLOBAL     0     1           "lc=sefl_equip" "SDL=TRUE" "descr=Load case"
+					TASK LOADQY              1 LOCAL      0    ""           "uload=5" "mass=TRUE" "descr=left sidewalk"
+					TASK LOADQY              1 LOCAL      0    ""           "uload=6" "mass=TRUE" "descr=right sidewalk"
+					TASK LOADQY              1 LOCAL      0    ""           "uload=3" "mass=TRUE" "descr=left roadlane"
+					TASK LOADQY              1 LOCAL      0    ""           "uload=4" "mass=TRUE" "descr=right roadlane"
+				LOADCASE END
 				
 			TASKS END
 			
@@ -1027,8 +1245,52 @@ ABM BEGIN
 			TASKS BEGIN
 				
 				#task   taskname          day1     duration assembly [SKIP] additional args
-				TASK    EIGEN                1 LOCAL      0    ""           "lcsum=ppp" "nmode=12" "naddv=12" "resname=eigen_res"                     \
+				TASK    EIGEN                1 LOCAL      0    ""           "lcsum=ppp" "nmode=7" "naddv=7" "resname=eigen_res"                       \
 				                                                            "xlsout=EIGEN.xlsx" "descr=Eigen calculation"
+				
+			TASKS END
+			
+		PHASE END
+		
+		PHASE "vert_force" BEGIN
+			
+			TEXT       ""
+			DAYBEGIN   1 FINAL
+			HUMIDITY   75.00
+			TMEAN      20.00
+			
+			ASSEMBLIES BEGIN
+				
+				ASM        2  MEMBER    "Girder 1"    BEAM  1    SGLOBAL   48.740000      SGLOBAL   51.655000
+				
+			ASSEMBLIES END
+			
+			TASKS BEGIN
+				
+				#task   taskname          day1     duration assembly [SKIP] additional args
+				LOADCASE                     1 LOCAL      0    ""           "lc=vert_force" "SDL=FALSE" "descr=Load case"
+					TASK LOADFE              1 LOCAL      0     2           "Fy=-1000.000" "ez=-2.000" "lnode=0" "descr=Point load on element"
+				LOADCASE END
+				
+			TASKS END
+			
+		PHASE END
+		
+		PHASE "trains" BEGIN
+			
+			TEXT       ""
+			DAYBEGIN   1 FINAL
+			HUMIDITY   75.00
+			TMEAN      20.00
+			
+			ASSEMBLIES BEGIN
+				
+			ASSEMBLIES END
+			
+			TASKS BEGIN
+				
+				#task   taskname          day1     duration assembly [SKIP] additional args
+				TASK    SUPTREE              1 LOCAL      0    ""           "env=Envelope 3" "descr=Evaluate superposition"
 				
 			TASKS END
 			
