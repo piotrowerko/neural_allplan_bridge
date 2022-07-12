@@ -1,4 +1,3 @@
-
 import subprocess
 
 exe = "C:/Program Files/Allplan/Allplan 2021/Prg/AllplanBridge_2022.exe"
